@@ -2,6 +2,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useFormik } from "formik";
 import { useState } from "react";
+import Input from "../components/form/TextInput";
 import { toast } from "react-toastify";
 import API from "../utils/api";
 import "../styles/auth.css";
@@ -44,15 +45,9 @@ function EditProduct() {
         formData.append("description", values.description);
         formData.append("category", values.category);
 
-        
         if (values.image) {
           formData.append("image", values.image);
         }
-        // Object.keys(values).forEach((key) => {
-        //   if (values[key] !== null && values[key] !== "") {
-        //     formData.append(key, values[key]);
-        //   }
-        // });
 
         await API.patch(`/products/${id}`, formData, {
           headers: {
@@ -85,28 +80,13 @@ function EditProduct() {
 
       <form onSubmit={formik.handleSubmit}>
         {/* title */}
-        <input
-          name="title"
-          placeholder="Title"
-          onChange={formik.handleChange}
-          value={formik.values.title}
-        />
+        <Input name="title" placeholder="Title" formik={formik} />
 
         {/* price */}
-        <input
-          name="price"
-          placeholder="Price"
-          onChange={formik.handleChange}
-          value={formik.values.price}
-        />
+        <Input name="price" placeholder="Price" formik={formik} />
 
         {/* desc */}
-        <input
-          name="description"
-          placeholder="Description"
-          onChange={formik.handleChange}
-          value={formik.values.description}
-        />
+        <Input name="description" placeholder="Description" formik={formik} />
 
         {/* category */}
         <select

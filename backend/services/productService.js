@@ -1,4 +1,3 @@
-// const productRepository = require("../repositories/productRepository");
 const prisma = require("../config/prisma");
 
 const createProduct = async (data, userId) => {
@@ -14,7 +13,13 @@ const createProduct = async (data, userId) => {
   });
 };
 
-const getProducts = async ({ search, category, sort, page = 1, limit = 15 }) => {
+const getProducts = async ({
+  search,
+  category,
+  sort,
+  page = 1,
+  limit = 15,
+}) => {
   const where = {
     is_active: true,
   };
@@ -45,8 +50,8 @@ const getProducts = async ({ search, category, sort, page = 1, limit = 15 }) => 
       sort === "low"
         ? { price: "asc" }
         : sort === "high"
-        ? { price: "desc" }
-        : { id: "desc" },
+          ? { price: "desc" }
+          : { id: "desc" },
 
     skip: (page - 1) * limit,
     take: Number(limit),

@@ -5,7 +5,6 @@ import { Sun, Moon } from "lucide-react";
 import { Routes, Route } from "react-router-dom";
 import { useSelector } from "react-redux";
 import ProductCard from "./components/ProductCard";
-import Input from "./components/Input";
 import Select from "./components/Select";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
@@ -62,11 +61,11 @@ function App() {
               <>
                 <div className="controls">
                   <div className="left-controls">
-                    <Input
+                    <input
                       placeholder="Search..."
                       value={search}
                       onChange={(e) => setSearch(e.target.value)}
-                      darkMode={darkMode}
+                      className="input"
                     />
 
                     <Select
@@ -90,6 +89,14 @@ function App() {
                       <option value="low">Low → High</option>
                       <option value="high">High → Low</option>
                     </Select>
+                  </div>
+                  <div className="right-controls">
+                    <button
+                      className="theme-btn"
+                      onClick={() => setDarkMode((prev) => !prev)}
+                    >
+                      {darkMode ? <Sun size={18} /> : <Moon size={18} />}
+                    </button>
                   </div>
                 </div>
 

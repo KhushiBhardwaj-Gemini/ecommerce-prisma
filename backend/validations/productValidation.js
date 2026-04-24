@@ -22,8 +22,6 @@ const productSchema = Joi.object({
     }),
 });
 
-//multer
-
 module.exports = {
   productSchema,
 };

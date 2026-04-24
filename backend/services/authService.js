@@ -1,7 +1,6 @@
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const prisma = require("../config/prisma");
-// const userRepository = require("../repositories/userRepository");
 
 // REGISTER SERVICE
 const registerUser = async ({ name, email, password }) => {
