@@ -1,0 +1,32 @@
+.card-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 10px;
+  flex-wrap: wrap;
+}
+
+.btn {
+  padding: 8px 14px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  background-color: orange;
+  color: black;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.btn:hover {
+  transform: scale(1.05);
+  filter: brightness(0.9);
+}
+
+.btn.secondary {
+  background-color: #ddd;
+}
+
+.btn.danger {
+  background-color: #ff6b6b;
+  color: white;
+}

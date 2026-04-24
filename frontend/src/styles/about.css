@@ -1,0 +1,30 @@
+.about-page {
+  height: 60vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.about-center {
+  text-align: center;
+}
+
+.about-title {
+  font-size: 32px;
+  font-weight: 600;
+  color: orange;
+  margin-bottom: 10px;
+}
+
+.about-subtitle {
+  font-size: 16px;
+  color: #555;
+}
+.dark .contact-card {
+  background: #1e1e1e;
+  color: white;
+}
+
+.dark .about-description {
+  color: #ccc;
+}

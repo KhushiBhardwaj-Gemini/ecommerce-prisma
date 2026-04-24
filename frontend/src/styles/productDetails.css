@@ -1,0 +1,69 @@
+/* Outer container */
+.product-details-container {
+  width: 100%;
+  min-height: 80vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 40px 20px;
+}
+
+/* Full-width card */
+.product-details-card {
+  width: 100%;
+  max-width: 1000px; /* keeps it readable */
+  background: #fff;
+  border-radius: 12px;
+  padding: 40px 20px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+/* Image */
+.product-details-image {
+  width: 200px;
+  height: auto;
+  object-fit: contain;
+  border-radius: 10px;
+  margin-bottom: 20px;
+}
+
+/* Title */
+.product-details-title {
+  font-size: 28px;
+  font-weight: 600;
+  margin-bottom: 20px;
+}
+
+/* Info text */
+.product-details-info {
+  font-size: 16px;
+  margin: 6px 0;
+  color: #333;
+}
+
+/* Labels */
+.product-details-info strong {
+  color: #000;
+}
+
+/* Back button */
+.back-btn {
+  margin-top: 30px;
+  padding: 10px 20px;
+  border: none;
+  background: orange;
+  color: #000;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+/* Hover effect */
+.back-btn:hover {
+  background: #e69500;
+}

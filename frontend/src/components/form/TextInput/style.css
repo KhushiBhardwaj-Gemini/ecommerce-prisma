@@ -1,0 +1,59 @@
+/* wrapper for input + error */
+.input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  width: 100%;
+  margin: 0 auto;
+  max-width: 280px;
+}
+
+/* actual input field */
+.input {
+  width: 100%;
+  padding: 10px;
+  box-sizing: border-box;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  outline: none;
+  font-size: 14px;
+  transition: all 0.2s ease;
+}
+
+/* focus state */
+.input:focus {
+  border-color: orange;
+  box-shadow: 0 0 0 2px rgba(255, 165, 0, 0.2);
+}
+
+/* error state */
+.input.error {
+  border-color: red;
+}
+
+/* error text (CLS FIX) */
+.error-text {
+  min-height: 18px;
+  font-size: 13px;
+  color: red;
+  margin: 2px 0 0 0;
+}
+
+/* dark mode support */
+.dark .input {
+  background: #2a2a2a;
+  color: white;
+  border: 1px solid #555;
+}
+
+.dark .input:focus {
+  border-color: orange;
+}
+
+.dark .input.error {
+  border-color: #ff4d4f;
+}
+
+.dark .error-text {
+  color: #ff6b6b;
+}
