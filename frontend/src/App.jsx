@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { Sun, Moon } from "lucide-react";
@@ -22,7 +22,9 @@ import API from "./utils/api";
 
 const fetchProducts = async ({ queryKey }) => {
   const [, params] = queryKey;
-
+  if (params.search && params.search.length < 3) {
+    return { products: [] }; // skip API
+  }
   const res = await API.get("/products", {
     params,
   });
@@ -36,9 +38,21 @@ function App() {
   const [search, setSearch] = useState("");
   const [category, setCategory] = useState("");
   const [sort, setSort] = useState("");
+  const [debouncedSearch, setDebouncedSearch] = useState(search);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedSearch(search);
+    }, 500); // wait 500ms
+
+    return () => clearTimeout(timer);
+  }, [search]);
 
   const { data, isLoading, isError } = useQuery({
-    queryKey: ["products", { search, category, sort, page: 1 }],
+    queryKey: [
+      "products",
+      { search: debouncedSearch, category, sort, page: 1 },
+    ],
     queryFn: fetchProducts,
   });
 
