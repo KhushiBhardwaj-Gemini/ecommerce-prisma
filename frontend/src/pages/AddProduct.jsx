@@ -34,7 +34,13 @@ function AddProduct() {
         const formData = new FormData();
 
         Object.keys(values).forEach((key) => {
-          if (values[key]) {
+          if (key === "image") {
+            if (values.image) {
+              formData.append("image", values.image);
+            }
+          } else if (key === "price") {
+            formData.append("price", Number(values.price));
+          } else {
             formData.append(key, values[key]);
           }
         });
@@ -51,7 +57,7 @@ function AddProduct() {
 
         navigate("/");
       } catch (err) {
-        toast.error(err);
+        toast.error(err.response?.data?.message || "Something went wrong");
       }
     },
   });

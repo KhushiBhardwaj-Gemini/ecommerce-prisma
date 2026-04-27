@@ -3,17 +3,18 @@ const productService = require("../services/productService");
 // CREATE
 const createProduct = async (req, res) => {
   try {
-    if (!req.file) {
-      return res.status(400).json({ msg: "Image is required" });
+    let image = null;
+    if (req.file) {
+      image = req.file.filename;
     }
 
     const product = await productService.createProduct(
       {
         title: req.body.title,
-        price: req.body.price,
+        price: Number(req.body.price),
         description: req.body.description,
         category: req.body.category?.toLowerCase().trim(),
-        image: req.file.filename,
+        image: image,
       },
       req.user.id,
     );
