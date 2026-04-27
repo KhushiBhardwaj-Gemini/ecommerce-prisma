@@ -1,5 +1,5 @@
 import { useDispatch, useSelector } from "react-redux";
-import { addToCart, removeFromCart } from "../store/cartSlice";
+import { addToCart, removeFromCart, increaseQty, decreaseQty } from "../store/cartSlice";
 import API from "../utils/api";
 import { useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
@@ -11,6 +11,9 @@ const ProductCard = ({ product, darkMode, isCart = false }) => {
 
   const cartItems = useSelector((state) => state.cart.items);
   const budget = useSelector((state) => state.cart.budget);
+
+  const cartItem = cartItems.find((item) => item.id === product.id);
+  const quantity = cartItem?.quantity || 0;
 
   const queryClient = useQueryClient();
   const navigate = useNavigate();
@@ -27,9 +30,10 @@ const ProductCard = ({ product, darkMode, isCart = false }) => {
       toast.error(err);
     }
   };
-
-  const total = cartItems.reduce((acc, item) => acc + Number(item.price), 0);
-
+  const total = cartItems.reduce(
+    (acc, item) => acc + item.price * item.quantity,
+    0,
+  );
   const willExceedBudget = budget && total + product.price > budget;
 
   const isInCart = cartItems.some((item) => item.id === product.id);
@@ -50,55 +54,63 @@ const ProductCard = ({ product, darkMode, isCart = false }) => {
       <div className="price">${product.price}</div>
 
       <div className="card-buttons">
-        {/* REMOVE FROM CART */}
-        {isCart ? (
-          <button
-            className="btn"
-            onClick={(e) => {
-              e.stopPropagation();
-              dispatch(removeFromCart(product.id));
-            }}
-          >
-            Remove from Cart
-          </button>
+        {isCart || quantity > 0 ? (
+          <div className="qty-controls">
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                dispatch(decreaseQty(product.id));
+              }}
+            >
+              -
+            </button>
+
+            <span>{quantity}</span>
+
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                dispatch(increaseQty(product.id));
+              }}
+              disabled={willExceedBudget}
+            >
+              +
+            </button>
+          </div>
         ) : (
           <button
             className="btn"
-            disabled={isInCart || willExceedBudget}
+            disabled={willExceedBudget}
             onClick={(e) => {
               e.stopPropagation();
               dispatch(addToCart(product));
             }}
           >
-            {isInCart
-              ? "Already Added"
-              : willExceedBudget
-                ? "Budget Exceeded"
-                : "Add to Cart"}
+            {willExceedBudget ? "Budget Exceeded" : "Add to Cart"}
           </button>
         )}
 
         {/* EDIT + DELETE */}
         {user && product.user_id === user.id && (
-            <>
-              <button
-                className="btn secondary"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  navigate(`/edit/${product.id}`);
-                }}
-              >
-                Edit
-              </button>
+          <>
+            <button
+              className="btn secondary"
+              onClick={(e) => {
+                e.stopPropagation();
+                navigate(`/edit/${product.id}`);
+              }}
+            >
+              Edit
+            </button>
 
-              <button
-                className="btn danger"
-                onClick={(e) => handleDelete(product.id, e)}
-              >
-                Delete
-              </button>
-            </>
-          )}
+            <button
+              className="btn danger"
+              onClick={(e) => handleDelete(product.id, e)}
+            >
+              Delete
+            </button>
+          </>
+        )}
       </div>
     </div>
   );

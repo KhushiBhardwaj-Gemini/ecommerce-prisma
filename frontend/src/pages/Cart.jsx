@@ -2,7 +2,8 @@ import { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import ProductCard from "../components/ProductCard";
 import { AlertTriangle } from "lucide-react";
-import { setBudget } from "../store/cartSlice";
+import { toast } from "react-toastify";
+import { setBudget, clearCart } from "../store/cartSlice";
 import "../styles/cart.css";
 
 const Cart = ({ darkMode }) => {
@@ -13,7 +14,15 @@ const Cart = ({ darkMode }) => {
   useEffect(() => {
     localStorage.setItem("budget", budget);
   }, [budget]);
-  const total = cartItems.reduce((acc, item) => acc + item.price, 0);
+  const total = cartItems.reduce(
+    (acc, item) => acc + item.price * item.quantity,
+    0,
+  );
+
+  const handleBuyNow = () => {
+    toast.success("Order placed successfully!");
+    dispatch(clearCart());
+  };
   return (
     <div className="cart-page">
       <div className="cart-container">
@@ -61,16 +70,25 @@ const Cart = ({ darkMode }) => {
         {cartItems.length === 0 ? (
           <div className="empty-cart">Your cart is empty</div>
         ) : (
-          <div className="grid">
-            {cartItems.map((item) => (
-              <ProductCard
-                key={item.id}
-                product={item}
-                darkMode={darkMode}
-                isCart={true}
-              />
-            ))}
-          </div>
+          <>
+            <div className="grid">
+              {cartItems.map((item) => (
+                <ProductCard
+                  key={item.id}
+                  product={item}
+                  darkMode={darkMode}
+                  isCart={true}
+                />
+              ))}
+            </div>
+            <div className="checkout">
+              <p>Total: ${total.toFixed(2)}</p>
+
+              <button className="btn buy-now" onClick={handleBuyNow}>
+                Buy Now
+              </button>
+            </div>
+          </>
         )}
       </div>
     </div>
