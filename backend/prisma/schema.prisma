@@ -29,7 +29,7 @@ model Product {
   price       Float
   description String?
   category    Category
-  image       String
+  image       String?
   is_active   Boolean @default(true)
 
   user_id Int

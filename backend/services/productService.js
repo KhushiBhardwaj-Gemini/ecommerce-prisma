@@ -7,7 +7,7 @@ const createProduct = async (data, userId) => {
       price: Number(data.price),
       description: data.description,
       category: data.category,
-      image: data.image,
+      image: data.image || null,
       user_id: userId,
     },
   });
