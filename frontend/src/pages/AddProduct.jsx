@@ -4,6 +4,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import * as Yup from "yup";
 import API from "../utils/api";
 import "../styles/auth.css";
+import Input from "../components/form/TextInput";
 import { toast } from "react-toastify";
 
 function AddProduct() {
@@ -61,34 +62,13 @@ function AddProduct() {
 
       <form onSubmit={formik.handleSubmit}>
         {/*product title*/}
-        <input
-          name="title"
-          placeholder="Product Name"
-          onChange={formik.handleChange}
-          value={formik.values.title}
-        />
-        {formik.touched.title && formik.errors.title && (
-          <p className="error-text">{formik.errors.title}</p>
-        )}
+        <Input name="title" placeholder="Product Name" formik={formik} />
 
         {/*price*/}
-        <input
-          name="price"
-          placeholder="Price"
-          onChange={formik.handleChange}
-          value={formik.values.price}
-        />
-        {formik.touched.price && formik.errors.price && (
-          <p className="error-text">{formik.errors.price}</p>
-        )}
+        <Input name="price" placeholder="Price" formik={formik} />
 
         {/*desc*/}
-        <input
-          name="description"
-          placeholder="Description"
-          onChange={formik.handleChange}
-          value={formik.values.description}
-        />
+        <Input name="description" placeholder="Description" formik={formik} />
 
         {/* category */}
         <select

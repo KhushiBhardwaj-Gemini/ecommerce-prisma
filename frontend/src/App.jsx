@@ -1,11 +1,10 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { Sun, Moon } from "lucide-react";
 import { Routes, Route } from "react-router-dom";
 import { useSelector } from "react-redux";
 import ProductCard from "./components/ProductCard";
-import Input from "./components/Input";
 import Select from "./components/Select";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
@@ -23,7 +22,9 @@ import API from "./utils/api";
 
 const fetchProducts = async ({ queryKey }) => {
   const [, params] = queryKey;
-
+  if (params.search && params.search.length < 3) {
+    return { products: [] }; // skip API
+  }
   const res = await API.get("/products", {
     params,
   });
@@ -37,9 +38,21 @@ function App() {
   const [search, setSearch] = useState("");
   const [category, setCategory] = useState("");
   const [sort, setSort] = useState("");
+  const [debouncedSearch, setDebouncedSearch] = useState(search);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedSearch(search);
+    }, 500); // wait 500ms
+
+    return () => clearTimeout(timer);
+  }, [search]);
 
   const { data, isLoading, isError } = useQuery({
-    queryKey: ["products", { search, category, sort, page: 1 }],
+    queryKey: [
+      "products",
+      { search: debouncedSearch, category, sort, page: 1 },
+    ],
     queryFn: fetchProducts,
   });
 
@@ -62,11 +75,11 @@ function App() {
               <>
                 <div className="controls">
                   <div className="left-controls">
-                    <Input
+                    <input
                       placeholder="Search..."
                       value={search}
                       onChange={(e) => setSearch(e.target.value)}
-                      darkMode={darkMode}
+                      className="input"
                     />
 
                     <Select
@@ -90,6 +103,14 @@ function App() {
                       <option value="low">Low → High</option>
                       <option value="high">High → Low</option>
                     </Select>
+                  </div>
+                  <div className="right-controls">
+                    <button
+                      className="theme-btn"
+                      onClick={() => setDarkMode((prev) => !prev)}
+                    >
+                      {darkMode ? <Sun size={18} /> : <Moon size={18} />}
+                    </button>
                   </div>
                 </div>
 

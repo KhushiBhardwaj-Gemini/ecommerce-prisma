@@ -20,7 +20,6 @@ const createProduct = async (req, res) => {
 
     res.status(201).json(product);
   } catch (err) {
-    console.log("❌ CREATE PRODUCT ERROR:", err);
     res.status(500).json({ msg: err.message });
   }
 };

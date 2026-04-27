@@ -4,7 +4,7 @@
   flex-direction: column;
   gap: 4px;
   width: 100%;
-  margin: 0 auto;
+  margin-bottom: 10px;
   max-width: 280px;
 }
 
@@ -31,7 +31,6 @@
   border-color: red;
 }
 
-/* error text (CLS FIX) */
 .error-text {
   min-height: 18px;
   font-size: 13px;

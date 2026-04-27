@@ -7,6 +7,13 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum Category {
+  electronics
+  men
+  women
+  jwellery
+}
+
 model User {
   id       Int      @id @default(autoincrement())
   name     String
@@ -21,7 +28,7 @@ model Product {
   title       String
   price       Float
   description String?
-  category    String
+  category    Category
   image       String
   is_active   Boolean @default(true)
 
