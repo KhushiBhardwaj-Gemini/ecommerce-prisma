@@ -53,6 +53,26 @@ const ProductDetails = () => {
           <strong>Seller:</strong> {data.user?.name}
         </p>
 
+        <h3 className="added-users-title">Added by users:</h3>
+        <div className="users-list">
+          {data?.cart?.length === 0 ? (
+            <p>No one has added this product</p>
+          ) : (
+            data?.cart?.map((c) => (
+              <div className="user-card" key={c.user.id}>
+                <div className="user-avatar">
+                  {c.user.name.charAt(0).toUpperCase()}
+                </div>
+
+                <div className="user-info">
+                  <span className="user-name">{c.user.name}</span>
+                  <span className="user-id">ID: {c.user.id}</span>
+                </div>
+              </div>
+            ))
+          )}
+        </div>
+
         <button className="back-btn" onClick={() => navigate("/")}>
           Back
         </button>

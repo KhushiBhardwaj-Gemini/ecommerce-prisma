@@ -74,6 +74,18 @@ const getProductById = async (id) => {
       user: {
         select: { name: true, email: true },
       },
+
+      cart: {
+        include: {
+          user: {
+            select: {
+              id: true,
+              name: true,
+              email: true,
+            },
+          },
+        },
+      },
     },
   });
 };

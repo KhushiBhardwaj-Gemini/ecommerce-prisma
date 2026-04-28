@@ -42,7 +42,7 @@ const Navbar = () => {
 
         <Link to="/add-product">Add Product</Link>
 
-        {user && <span className="nav-user">Hi, {user.name}</span>}
+        {user && <span className="nav-user" onClick={()=> navigate("/my-products")} style={{cursor: "pointer"}}>Hi, {user.name}</span>}
         {token ? (
           <span className="nav-link" onClick={handleLogout}>
             Logout

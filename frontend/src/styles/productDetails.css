@@ -67,3 +67,59 @@
 .back-btn:hover {
   background: #e69500;
 }
+.added-users-title {
+  margin-top: 25px;
+  margin-bottom: 15px;
+}
+
+.users-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+  max-width: 400px;
+}
+
+.user-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 15px;
+  border-radius: 8px;
+  background: #f5f5f5;
+  transition: 0.2s;
+}
+
+.user-card:hover {
+  background: #eaeaea;
+}
+
+.user-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: orange;
+  color: black;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+}
+
+.user-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.user-name {
+  font-weight: 600;
+}
+
+.user-id {
+  font-size: 12px;
+  color: gray;
+}
+
+.no-users {
+  color: gray;
+}

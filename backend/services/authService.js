@@ -54,6 +54,16 @@ const getMe = async (userId) => {
       id: true,
       name: true,
       email: true,
+
+      products: {
+        select: {
+          id: true,
+          title: true,
+          price: true,
+          image: true,
+          category: true,
+        },
+      },
     },
   });
 
