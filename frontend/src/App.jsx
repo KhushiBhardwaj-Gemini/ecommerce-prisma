@@ -10,6 +10,7 @@ import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 import Cart from "./pages/Cart";
 import About from "./pages/About";
+import MyProducts from "./pages/MyProducts";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import PrivateRoute from "./components/PrivateRoute";
@@ -139,6 +140,15 @@ function App() {
           element={
             <PrivateRoute>
               <Cart darkMode={darkMode} />
+            </PrivateRoute>
+          }
+        />
+
+        <Route
+          path="/my-products"
+          element={
+            <PrivateRoute>
+              <MyProducts />
             </PrivateRoute>
           }
         />

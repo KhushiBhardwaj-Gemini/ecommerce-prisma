@@ -1,9 +1,18 @@
 import { Link, useNavigate } from "react-router-dom";
-import { useSelector } from "react-redux";
 import { ShoppingCart } from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
+import API from "../utils/api";
 
 const Navbar = () => {
-  const cartItems = useSelector((state) => state.cart.items);
+  const { data } = useQuery({
+    queryKey: ["cart"],
+    queryFn: async () => {
+      const res = await API.get("/cart");
+      return res.data;
+    },
+  });
+
+  const cartItems = data || [];
   const navigate = useNavigate();
 
   const token = localStorage.getItem("token");
@@ -33,7 +42,7 @@ const Navbar = () => {
 
         <Link to="/add-product">Add Product</Link>
 
-        {user && <span className="nav-user">Hi, {user.name}</span>}
+        {user && <span className="nav-user" onClick={()=> navigate("/my-products")} style={{cursor: "pointer"}}>Hi, {user.name}</span>}
         {token ? (
           <span className="nav-link" onClick={handleLogout}>
             Logout

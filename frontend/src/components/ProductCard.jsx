@@ -1,22 +1,39 @@
-import { useDispatch, useSelector } from "react-redux";
-import { addToCart, removeFromCart, increaseQty, decreaseQty } from "../store/cartSlice";
+import { useState, useEffect } from "react";
 import API from "../utils/api";
-import { useQueryClient } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
 import "../styles/product.css";
 import { toast } from "react-toastify";
 
 const ProductCard = ({ product, darkMode, isCart = false }) => {
-  const dispatch = useDispatch();
-
-  const cartItems = useSelector((state) => state.cart.items);
-  const budget = useSelector((state) => state.cart.budget);
-
-  const cartItem = cartItems.find((item) => item.id === product.id);
-  const quantity = cartItem?.quantity || 0;
-
   const queryClient = useQueryClient();
   const navigate = useNavigate();
+
+  //fetch cart from DB
+  const { data: cartData } = useQuery({
+    queryKey: ["cart"],
+    queryFn: async () => {
+      const res = await API.get("/cart");
+      return res.data;
+    },
+  });
+  const cartItems = cartData || [];
+
+  const cartItem = cartItems.find((item) => item.productId === product.id);
+  const quantity = cartItem?.quantity || 0;
+  const isInCart = quantity > 0;
+
+  const total = cartItems.reduce(
+    (acc, item) => acc + item.product.price * item.quantity,
+    0,
+  );
+  const [budget, setBudget] = useState(
+    Number(localStorage.getItem("budget")) || 0,
+  );
+
+  useEffect(() => {
+    localStorage.setItem("budget", budget);
+  }, [budget]);
 
   const user = JSON.parse(localStorage.getItem("user"));
 
@@ -30,13 +47,37 @@ const ProductCard = ({ product, darkMode, isCart = false }) => {
       toast.error(err);
     }
   };
-  const total = cartItems.reduce(
-    (acc, item) => acc + item.price * item.quantity,
-    0,
-  );
   const willExceedBudget = budget && total + product.price > budget;
 
-  const isInCart = cartItems.some((item) => item.id === product.id);
+  const handleAddToCart = async (e) => {
+    e.stopPropagation();
+    try {
+      await API.post("/cart/add", {
+        productId: product.id,
+      });
+      queryClient.invalidateQueries(["cart"]);
+    } catch (err) {
+      toast.error("Failed to add to cart");
+    }
+  };
+
+  const handleIncrease = async (e) => {
+    e.stopPropagation();
+    await API.patch("/cart/update", {
+      productId: product.id,
+      type: "increase",
+    });
+    queryClient.invalidateQueries(["cart"]);
+  };
+
+  const handleDecrease = async (e) => {
+    e.stopPropagation();
+    await API.patch("/cart/update", {
+      productId: product.id,
+      type: "decrease",
+    });
+    queryClient.invalidateQueries(["cart"]);
+  };
 
   return (
     <div
@@ -56,24 +97,11 @@ const ProductCard = ({ product, darkMode, isCart = false }) => {
       <div className="card-buttons">
         {isCart || quantity > 0 ? (
           <div className="qty-controls">
-            <button
-              onClick={(e) => {
-                e.stopPropagation();
-                dispatch(decreaseQty(product.id));
-              }}
-            >
-              -
-            </button>
+            <button onClick={handleDecrease}>-</button>
 
             <span>{quantity}</span>
 
-            <button
-              onClick={(e) => {
-                e.stopPropagation();
-                dispatch(increaseQty(product.id));
-              }}
-              disabled={willExceedBudget}
-            >
+            <button onClick={handleIncrease} disabled={willExceedBudget}>
               +
             </button>
           </div>
@@ -81,17 +109,14 @@ const ProductCard = ({ product, darkMode, isCart = false }) => {
           <button
             className="btn"
             disabled={willExceedBudget}
-            onClick={(e) => {
-              e.stopPropagation();
-              dispatch(addToCart(product));
-            }}
+            onClick={handleAddToCart}
           >
             {willExceedBudget ? "Budget Exceeded" : "Add to Cart"}
           </button>
         )}
 
         {/* EDIT + DELETE */}
-        {user && product.user_id === user.id && (
+        {!isCart && user && product.user_id === user.id && (
           <>
             <button
               className="btn secondary"
@@ -105,7 +130,10 @@ const ProductCard = ({ product, darkMode, isCart = false }) => {
 
             <button
               className="btn danger"
-              onClick={(e) => handleDelete(product.id, e)}
+              onClick={(e) => {
+                e.stopPropagation();
+                handleDelete(product.id, e);
+              }}
             >
               Delete
             </button>

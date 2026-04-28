@@ -49,11 +49,21 @@ const loginUser = async ({ email, password }) => {
 
 const getMe = async (userId) => {
   const user = await prisma.user.findUnique({
-    where: { id: Number(userId) },
+    where: { id: userId },
     select: {
       id: true,
       name: true,
       email: true,
+
+      products: {
+        select: {
+          id: true,
+          title: true,
+          price: true,
+          image: true,
+          category: true,
+        },
+      },
     },
   });
 

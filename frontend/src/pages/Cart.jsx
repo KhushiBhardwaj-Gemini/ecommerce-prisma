@@ -1,28 +1,49 @@
 import { useState, useEffect } from "react";
-import { useSelector, useDispatch } from "react-redux";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import API from "../utils/api";
 import ProductCard from "../components/ProductCard";
 import { AlertTriangle } from "lucide-react";
 import { toast } from "react-toastify";
-import { setBudget, clearCart } from "../store/cartSlice";
 import "../styles/cart.css";
 
 const Cart = ({ darkMode }) => {
-  const cartItems = useSelector((state) => state.cart.items);
-  const dispatch = useDispatch();
-  const budget = useSelector((state) => state.cart.budget);
+  const { data, isLoading } = useQuery({
+    queryKey: ["cart"],
+    queryFn: async () => {
+      const res = await API.get("/cart");
+      return res.data;
+    },
+  });
+  const queryClient = useQueryClient();
+  const cartItems = data || [];
+  const [budget, setBudget] = useState(
+    Number(localStorage.getItem("budget")) || 0,
+  );
 
   useEffect(() => {
     localStorage.setItem("budget", budget);
   }, [budget]);
   const total = cartItems.reduce(
-    (acc, item) => acc + item.price * item.quantity,
+    (acc, item) => acc + item.product.price * item.quantity,
     0,
   );
 
-  const handleBuyNow = () => {
-    toast.success("Order placed successfully!");
-    dispatch(clearCart());
+  const handleBuyNow = async () => {
+    try {
+      await API.delete("/cart/clear");
+      toast.success("Order placed successfully!");
+
+      //refetch cart
+      queryClient.invalidateQueries(["cart"]);
+    } catch (err) {
+      toast.error("Failed to place order");
+    }
   };
+
+  if (isLoading) {
+    return <div style={{ padding: "20px" }}>Loading cart...</div>;
+  }
+
   return (
     <div className="cart-page">
       <div className="cart-container">
@@ -33,7 +54,7 @@ const Cart = ({ darkMode }) => {
             <input
               type="number"
               value={budget === 0 ? "" : budget}
-              onChange={(e) => dispatch(setBudget(Number(e.target.value)))}
+              onChange={(e) => setBudget(Number(e.target.value))}
               className="budget-input"
             />
           </div>
@@ -74,8 +95,9 @@ const Cart = ({ darkMode }) => {
             <div className="grid">
               {cartItems.map((item) => (
                 <ProductCard
-                  key={item.id}
-                  product={item}
+                  key={item.productId}
+                  product={item.product}
+                  quantity={item.quantity}
                   darkMode={darkMode}
                   isCart={true}
                 />

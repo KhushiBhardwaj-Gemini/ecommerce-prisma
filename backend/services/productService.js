@@ -69,10 +69,22 @@ const getProducts = async ({
 
 const getProductById = async (id) => {
   return await prisma.product.findUnique({
-    where: { id: Number(id) },
+    where: { id: id },
     include: {
       user: {
         select: { name: true, email: true },
+      },
+
+      cart: {
+        include: {
+          user: {
+            select: {
+              id: true,
+              name: true,
+              email: true,
+            },
+          },
+        },
       },
     },
   });
@@ -88,14 +100,14 @@ const updateProduct = async (id, data) => {
   if (data.image) cleanData.image = data.image;
 
   return await prisma.product.update({
-    where: { id: Number(id) },
+    where: { id: id },
     data: cleanData,
   });
 };
 
 const deleteProduct = async (id) => {
   return await prisma.product.delete({
-    where: { id: Number(id) },
+    where: { id: id },
   });
 };
 module.exports = {
