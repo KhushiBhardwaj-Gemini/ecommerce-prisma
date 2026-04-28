@@ -66,7 +66,7 @@ const ProductDetails = () => {
 
                 <div className="user-info">
                   <span className="user-name">{c.user.name}</span>
-                  <span className="user-id">ID: {c.user.id}</span>
+                  {/* <span className="user-id">ID: {c.user.id}</span> */}
                 </div>
               </div>
             ))
