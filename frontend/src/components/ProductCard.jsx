@@ -37,6 +37,10 @@ const ProductCard = ({ product, darkMode, isCart = false }) => {
 
   const user = JSON.parse(localStorage.getItem("user"));
 
+  const isOwner = user && product.user_id === user.id;
+  const isAdmin = user?.role === "ADMIN";
+  const canEdit = isOwner || isAdmin;
+
   const handleDelete = async (id, e) => {
     e.stopPropagation();
     try {
@@ -116,7 +120,7 @@ const ProductCard = ({ product, darkMode, isCart = false }) => {
         )}
 
         {/* EDIT + DELETE */}
-        {!isCart && user && product.user_id === user.id && (
+        {!isCart && canEdit && (
           <>
             <button
               className="btn secondary"

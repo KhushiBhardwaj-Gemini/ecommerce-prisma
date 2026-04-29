@@ -1,0 +1,44 @@
+/* Container */
+.dashboard-container {
+  padding: 20px;
+}
+
+/* Title */
+.dashboard-title {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+/* Table wrapper */
+.table-wrapper {
+  height: 500px;
+  width: 100%;
+}
+
+/* Users section */
+.users-section {
+  margin-top: 30px;
+  padding: 20px;
+  background: #f9f9f9;
+  border-radius: 10px;
+}
+
+/* User item */
+.user-item {
+  padding: 10px;
+  border-bottom: 1px solid #ddd;
+}
+
+/* Loading */
+.loading-text {
+  padding: 20px;
+}
+
+/* Error */
+.error-text {
+  color: red;
+  padding: 20px;
+}
+.userH{
+    color: #555;
+}

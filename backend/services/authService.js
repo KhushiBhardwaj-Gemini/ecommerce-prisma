@@ -22,9 +22,11 @@ const registerUser = async ({ name, email, password }) => {
     },
   });
 
-  const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, {
-    expiresIn: "1d",
-  });
+  const token = jwt.sign(
+    { id: user.id, role: user.role }, 
+    process.env.JWT_SECRET, 
+    { expiresIn: "1d"}
+  );
 
   return { token };
 };
@@ -40,7 +42,7 @@ const loginUser = async ({ email, password }) => {
   const isMatch = await bcrypt.compare(password, user.password);
   if (!isMatch) throw new Error("Invalid credentials");
 
-  const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, {
+  const token = jwt.sign({ id: user.id, role: user.role }, process.env.JWT_SECRET, {
     expiresIn: "1d",
   });
 
@@ -54,7 +56,7 @@ const getMe = async (userId) => {
       id: true,
       name: true,
       email: true,
-
+      role: true, 
       products: {
         select: {
           id: true,

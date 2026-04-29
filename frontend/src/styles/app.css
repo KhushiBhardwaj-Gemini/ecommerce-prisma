@@ -263,6 +263,27 @@ body {
     margin-right: 0;
   }
 }
+.admin-btn {
+  background: linear-gradient(135deg, orange , rgb(255, 164, 0));
+  color: white;
+  border: none;
+  padding: 6px 14px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+
+.admin-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 10px rgba(237, 163, 4, 0.4);
+}
+
+.admin-btn:active {
+  transform: scale(0.96);
+}
 
 /* ================= CART ================= */
 

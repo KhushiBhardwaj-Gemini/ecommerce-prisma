@@ -90,7 +90,18 @@ const getProductById = async (id) => {
   });
 };
 
-const updateProduct = async (id, data) => {
+const updateProduct = async (id, data, user) => {
+  const product = await prisma.product.findUnique({
+    where: { id },
+  });
+  if (!product) {
+    throw new Error("Product not found");
+  }
+  //ownership check
+  if (user.role === "SELLER" && product.user_id !== user.id) {
+    throw new Error("Not authorized to update this product");
+  }
+
   const cleanData = {};
 
   if (data.title) cleanData.title = data.title;
@@ -105,7 +116,17 @@ const updateProduct = async (id, data) => {
   });
 };
 
-const deleteProduct = async (id) => {
+const deleteProduct = async (id, user) => {
+  const product = await prisma.product.findUnique({
+    where: { id },
+  });
+  if (!product) {
+    throw new Error("Product not found");
+  }
+  //ownership check
+  if (user.role === "SELLER" && product.user_id !== user.id) {
+    throw new Error("Not authorized to delete this product");
+  }
   return await prisma.product.delete({
     where: { id: id },
   });

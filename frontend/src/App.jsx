@@ -17,6 +17,7 @@ import PrivateRoute from "./components/PrivateRoute";
 import AddProduct from "./pages/AddProduct";
 import EditProduct from "./pages/EditProduct";
 import ProductDetails from "./pages/ProductDetails";
+import AdminDashboard from "./pages/AdminDashboard";
 import "./styles/app.css";
 
 import API from "./utils/api";
@@ -143,7 +144,7 @@ function App() {
             </PrivateRoute>
           }
         />
-
+        <Route path="/admin" element={<AdminDashboard />} />
         <Route
           path="/my-products"
           element={

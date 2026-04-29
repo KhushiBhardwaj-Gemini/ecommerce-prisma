@@ -41,8 +41,18 @@ const Navbar = () => {
         </Link>
 
         <Link to="/add-product">Add Product</Link>
-
-        {user && <span className="nav-user" onClick={()=> navigate("/my-products")} style={{cursor: "pointer"}}>Hi, {user.name}</span>}
+        {user?.role === "ADMIN" && (
+          <button className="admin-btn" onClick={() => navigate("/admin")}>Admin Dashboard</button>
+        )}
+        {user && (
+          <span
+            className="nav-user"
+            onClick={() => navigate("/my-products")}
+            style={{ cursor: "pointer" }}
+          >
+            Hi, {user.name}
+          </span>
+        )}
         {token ? (
           <span className="nav-link" onClick={handleLogout}>
             Logout
