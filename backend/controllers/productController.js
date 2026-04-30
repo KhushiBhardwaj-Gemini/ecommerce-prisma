@@ -1,4 +1,5 @@
 const productService = require("../services/productService");
+const logger = require("../utils/logger");
 
 // CREATE
 const createProduct = async (req, res) => {
@@ -21,6 +22,7 @@ const createProduct = async (req, res) => {
 
     res.status(201).json(product);
   } catch (err) {
+    logger.error(`Create product error: ${err.message}`);
     res.status(500).json({ msg: err.message });
   }
 };
@@ -31,6 +33,7 @@ const getProducts = async (req, res) => {
     const products = await productService.getProducts(req.query);
     res.json(products);
   } catch (err) {
+    logger.error(`Get products error: ${err.message}`);
     res.status(500).json({ msg: err.message });
   }
 };
@@ -44,6 +47,7 @@ const getProductById = async (req, res) => {
     }
     res.json(product);
   } catch (err) {
+    logger.error(`Get product by ID error: ${err.message}`);
     res.status(500).json({ msg: err.message });
   }
 };
@@ -70,6 +74,7 @@ const updateProduct = async (req, res) => {
 
     res.json(updated);
   } catch (err) {
+    logger.error(`Update product error: ${err.message}`);
     res.status(500).json({ msg: err.message });
   }
 };
@@ -83,6 +88,7 @@ const deleteProduct = async (req, res) => {
     );
     res.json({ msg: "Product deleted" });
   } catch (err) {
+    logger.error(`Delete product error: ${err.message}`);
     res.status(500).json({ msg: err.message });
   }
 };

@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQueryClient } from "@tanstack/react-query";
+import useCart from "../hooks/useCart";
 import API from "../utils/api";
 import ProductCard from "../components/ProductCard";
 import { AlertTriangle } from "lucide-react";
@@ -7,13 +8,7 @@ import { toast } from "react-toastify";
 import "../styles/cart.css";
 
 const Cart = ({ darkMode }) => {
-  const { data, isLoading } = useQuery({
-    queryKey: ["cart"],
-    queryFn: async () => {
-      const res = await API.get("/cart");
-      return res.data;
-    },
-  });
+  const { data, isLoading } = useCart();
   const queryClient = useQueryClient();
   const cartItems = data || [];
   const [budget, setBudget] = useState(
@@ -97,6 +92,7 @@ const Cart = ({ darkMode }) => {
                 <ProductCard
                   key={item.productId}
                   product={item.product}
+                  cartItems={cartItems}
                   quantity={item.quantity}
                   darkMode={darkMode}
                   isCart={true}

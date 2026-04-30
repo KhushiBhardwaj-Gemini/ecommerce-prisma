@@ -1,14 +1,17 @@
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const prisma = require("../config/prisma");
+const logger = require("../utils/logger");
 
 // REGISTER SERVICE
 const registerUser = async ({ name, email, password }) => {
+  logger.info(`User registered: ${email}`);
   const existingUser = await prisma.user.findUnique({
     where: { email },
   });
 
   if (existingUser) {
+    logger.warn(`Register failed: user already exists for email ${email}`);
     throw new Error("User already exists");
   }
 
@@ -33,15 +36,21 @@ const registerUser = async ({ name, email, password }) => {
 
 // LOGIN SERVICE
 const loginUser = async ({ email, password }) => {
+  logger.info(`User logged in: ${email}`);
   const user = await prisma.user.findUnique({
     where: { email },
   });
 
-  if (!user) throw new Error("Invalid credentials");
+  if (!user){
+    logger.warn(`Login failed: user not found for email ${email}`);
+    throw new Error("Invalid credentials");
+  } 
 
   const isMatch = await bcrypt.compare(password, user.password);
-  if (!isMatch) throw new Error("Invalid credentials");
-
+  if (!isMatch){
+    logger.warn(`Login failed: invalid password for email ${email}`);
+    throw new Error("Invalid credentials");
+  }
   const token = jwt.sign({ id: user.id, role: user.role }, process.env.JWT_SECRET, {
     expiresIn: "1d",
   });
@@ -69,7 +78,10 @@ const getMe = async (userId) => {
     },
   });
 
-  if (!user) throw new Error("User not found");
+  if (!user){
+    logger.warn(`GetMe failed: user not found for id ${userId}`);
+    throw new Error("User not found");
+  } 
 
   return user;
 };

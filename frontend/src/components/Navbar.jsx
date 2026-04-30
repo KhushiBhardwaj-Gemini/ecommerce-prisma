@@ -1,16 +1,10 @@
 import { Link, useNavigate } from "react-router-dom";
-import { ShoppingCart } from "lucide-react";
-import { useQuery } from "@tanstack/react-query";
+import { ShoppingCart } from "lucide-react"; 
+import useCart from "../hooks/useCart";
 import API from "../utils/api";
 
 const Navbar = () => {
-  const { data } = useQuery({
-    queryKey: ["cart"],
-    queryFn: async () => {
-      const res = await API.get("/cart");
-      return res.data;
-    },
-  });
+  const { data } = useCart();
 
   const cartItems = data || [];
   const navigate = useNavigate();

@@ -1,6 +1,8 @@
 const prisma = require("../config/prisma");
+const logger = require("../utils/logger");
 
 const createProduct = async (data, userId) => {
+  logger.info(`Product created: ${data.title} by user ${userId}`);
   return await prisma.product.create({
     data: {
       title: data.title,
@@ -91,14 +93,17 @@ const getProductById = async (id) => {
 };
 
 const updateProduct = async (id, data, user) => {
+  logger.info(`Product updated: ${id} by user ${user.id}`);
   const product = await prisma.product.findUnique({
     where: { id },
   });
   if (!product) {
+    logger.warn(`Product not found: ${id}`);
     throw new Error("Product not found");
   }
   //ownership check
   if (user.role === "SELLER" && product.user_id !== user.id) {
+    logger.warn(`Unauthorized attempt to update product: ${id}`);
     throw new Error("Not authorized to update this product");
   }
 
@@ -117,14 +122,17 @@ const updateProduct = async (id, data, user) => {
 };
 
 const deleteProduct = async (id, user) => {
+  logger.info(`Product deleted: ${id} by user ${user.id}`);
   const product = await prisma.product.findUnique({
     where: { id },
   });
   if (!product) {
+    logger.warn(`Product not found: ${id}`);
     throw new Error("Product not found");
   }
   //ownership check
   if (user.role === "SELLER" && product.user_id !== user.id) {
+    logger.warn(`Unauthorized attempt to delete product: ${id}`);
     throw new Error("Not authorized to delete this product");
   }
   return await prisma.product.delete({
