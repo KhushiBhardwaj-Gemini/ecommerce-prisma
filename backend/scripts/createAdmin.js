@@ -1,12 +1,13 @@
 const prisma = require("../config/prisma");
 const bcrypt = require("bcryptjs");
+const ROLES = require("../constants/roles");
 
 async function main() {
     try{
-        const hashedPassword = await bcrypt.hash("admin@123", 10);
+        const hashedPassword = await bcrypt.hash(process.env.ADMIN_PASSWORD, 10);
 
         const existing = await prisma.user.findUnique({
-            where: {email: "admin@gmail.com"},
+            where: {email: process.env.ADMIN_EMAIL},
         });
 
         if(existing){
@@ -17,9 +18,9 @@ async function main() {
         await prisma.user.create({
             data: {
                 name: "Admin",
-                email: "admin@gmail.com",
+                email: process.env.ADMIN_EMAIL,
                 password: hashedPassword,
-                role: "ADMIN",
+                role: ROLES.ADMIN,
             },
         });
         console.log("Admin created successfully");

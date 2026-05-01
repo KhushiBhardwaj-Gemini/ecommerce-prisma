@@ -3,6 +3,7 @@ import API from "../utils/api";
 import { useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
 import "../styles/product.css";
+import { ROLES } from "../constants/roles";
 import { toast } from "react-toastify";
 
 const ProductCard = ({ product, darkMode, isCart = false, cartItems = [] }) => {
@@ -29,7 +30,7 @@ const ProductCard = ({ product, darkMode, isCart = false, cartItems = [] }) => {
   const user = JSON.parse(localStorage.getItem("user"));
 
   const isOwner = user && product.user_id === user.id;
-  const isAdmin = user?.role === "ADMIN";
+  const isAdmin = user?.role === ROLES.ADMIN;
   const canEdit = isOwner || isAdmin;
 
   const handleDelete = async (id, e) => {

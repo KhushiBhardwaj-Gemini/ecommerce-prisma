@@ -2,6 +2,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { ShoppingCart } from "lucide-react"; 
 import useCart from "../hooks/useCart";
 import API from "../utils/api";
+import { ROLES } from "../constants/roles";
 
 const Navbar = () => {
   const { data } = useCart();
@@ -35,7 +36,7 @@ const Navbar = () => {
         </Link>
 
         <Link to="/add-product">Add Product</Link>
-        {user?.role === "ADMIN" && (
+        {user?.role === ROLES.ADMIN && (
           <button className="admin-btn" onClick={() => navigate("/admin")}>Admin Dashboard</button>
         )}
         {user && (

@@ -1,8 +1,10 @@
+const ROLES = require("../constants/roles");
 const sellerOrAdmin = (req, res, next) => {
-  if (!req.user) {
+  const role = req.user?.role;
+  if (!role) {
     return res.status(401).json({ msg: "Unauthorized" });
   }
-  if (req.user.role !== "ADMIN" && req.user.role !== "SELLER") {
+  if (role !== ROLES.ADMIN && role !== ROLES.SELLER) {
     return res.status(403).json({ msg: "Seller or Admin only" });
   }
 
