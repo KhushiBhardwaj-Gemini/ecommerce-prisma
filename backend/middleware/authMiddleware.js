@@ -1,4 +1,5 @@
 const jwt = require("jsonwebtoken");
+const ROLES = require("../constants/roles");
 
 module.exports = (req, res, next) => {
   const authHeader = req.header("Authorization");
@@ -20,7 +21,7 @@ module.exports = (req, res, next) => {
       const reqId = String(requestedUserId).trim();
       const tokenId = String(req.user.id).trim();
 
-      if (reqId !== tokenId && req.user.role !== "ADMIN") {
+      if (reqId !== tokenId && req.user.role !== ROLES.ADMIN) {
         return res.status(403).json({
           msg: "Unauthorized: Token mismatch",
         });
