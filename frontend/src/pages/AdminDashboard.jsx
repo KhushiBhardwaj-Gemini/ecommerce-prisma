@@ -82,10 +82,30 @@ const AdminDashboard = () => {
     quantity: item.quantity,
   }));
 
+  const handleDownloadAudit = async () => {
+    try {
+      const res = await API.get("/admin/audit/export", {
+        responseType: "blob",
+      });
+
+      const url = window.URL.createObjectURL(new Blob([res.data]));
+      const link = document.createElement("a");
+
+      link.href = url;
+      link.setAttribute("download", "audit_logs.xlsx");
+
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+    } catch (err) {
+      console.error("Download failed", err);
+    }
+  };
+
   return (
     <div className="dashboard-container">
       <h2 className="dashboard-title">Admin Dashboard</h2>
-
+      <button onClick={handleDownloadAudit}>Download Audit Logs</button>
       <div className="table-wrapper">
         <DataGrid
           rows={data || []}
