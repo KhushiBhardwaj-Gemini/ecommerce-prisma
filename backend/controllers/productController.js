@@ -1,4 +1,5 @@
 const productService = require("../services/productService");
+const logger = require("../utils/logger");
 
 // CREATE
 const createProduct = async (req, res) => {
@@ -21,6 +22,7 @@ const createProduct = async (req, res) => {
 
     res.status(201).json(product);
   } catch (err) {
+    logger.error(`Create product error: ${err.message}`);
     res.status(500).json({ msg: err.message });
   }
 };
@@ -31,6 +33,7 @@ const getProducts = async (req, res) => {
     const products = await productService.getProducts(req.query);
     res.json(products);
   } catch (err) {
+    logger.error(`Get products error: ${err.message}`);
     res.status(500).json({ msg: err.message });
   }
 };
@@ -44,6 +47,7 @@ const getProductById = async (req, res) => {
     }
     res.json(product);
   } catch (err) {
+    logger.error(`Get product by ID error: ${err.message}`);
     res.status(500).json({ msg: err.message });
   }
 };
@@ -51,18 +55,6 @@ const getProductById = async (req, res) => {
 // UPDATE
 const updateProduct = async (req, res) => {
   try {
-    const product = await productService.getProductById(req.params.id);
-
-    //check if product exists
-    if (!product) {
-      return res.status(404).json({ msg: "Product not found" });
-    }
-
-    //ownership check
-    if (product.user_id !== req.user.id) {
-      return res.status(403).json({ msg: "Not authorized" });
-    }
-
     const updatedData = {};
 
     if (req.body.title) updatedData.title = req.body.title;
@@ -77,10 +69,12 @@ const updateProduct = async (req, res) => {
     const updated = await productService.updateProduct(
       req.params.id,
       updatedData,
+      req.user,
     );
 
     res.json(updated);
   } catch (err) {
+    logger.error(`Update product error: ${err.message}`);
     res.status(500).json({ msg: err.message });
   }
 };
@@ -88,20 +82,13 @@ const updateProduct = async (req, res) => {
 // DELETE
 const deleteProduct = async (req, res) => {
   try {
-    const product = await productService.getProductById(req.params.id);
-
-    //if product exists
-    if (!product) {
-      return res.status(404).json({ msg: "Product not found" });
-    }
-    //ownership check
-    if (product.user_id !== req.user.id) {
-      return res.status(403).json({ msg: "Not authorized" });
-    }
-
-    await productService.deleteProduct(req.params.id);
+    await productService.deleteProduct(
+      req.params.id,
+      req.user,
+    );
     res.json({ msg: "Product deleted" });
   } catch (err) {
+    logger.error(`Delete product error: ${err.message}`);
     res.status(500).json({ msg: err.message });
   }
 };

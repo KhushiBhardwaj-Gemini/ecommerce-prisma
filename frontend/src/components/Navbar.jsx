@@ -1,16 +1,11 @@
 import { Link, useNavigate } from "react-router-dom";
-import { ShoppingCart } from "lucide-react";
-import { useQuery } from "@tanstack/react-query";
+import { ShoppingCart } from "lucide-react"; 
+import useCart from "../hooks/useCart";
 import API from "../utils/api";
+import { ROLES } from "../constants/roles";
 
 const Navbar = () => {
-  const { data } = useQuery({
-    queryKey: ["cart"],
-    queryFn: async () => {
-      const res = await API.get("/cart");
-      return res.data;
-    },
-  });
+  const { data } = useCart();
 
   const cartItems = data || [];
   const navigate = useNavigate();
@@ -41,8 +36,18 @@ const Navbar = () => {
         </Link>
 
         <Link to="/add-product">Add Product</Link>
-
-        {user && <span className="nav-user" onClick={()=> navigate("/my-products")} style={{cursor: "pointer"}}>Hi, {user.name}</span>}
+        {user?.role === ROLES.ADMIN && (
+          <button className="admin-btn" onClick={() => navigate("/admin")}>Admin Dashboard</button>
+        )}
+        {user && (
+          <span
+            className="nav-user"
+            onClick={() => navigate("/my-products")}
+            style={{ cursor: "pointer" }}
+          >
+            Hi, {user.name}
+          </span>
+        )}
         {token ? (
           <span className="nav-link" onClick={handleLogout}>
             Logout

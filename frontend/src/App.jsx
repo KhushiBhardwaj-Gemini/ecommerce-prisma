@@ -17,6 +17,8 @@ import PrivateRoute from "./components/PrivateRoute";
 import AddProduct from "./pages/AddProduct";
 import EditProduct from "./pages/EditProduct";
 import ProductDetails from "./pages/ProductDetails";
+import AdminDashboard from "./pages/AdminDashboard";
+import useCart from "./hooks/useCart";
 import "./styles/app.css";
 
 import API from "./utils/api";
@@ -40,6 +42,7 @@ function App() {
   const [category, setCategory] = useState("");
   const [sort, setSort] = useState("");
   const [debouncedSearch, setDebouncedSearch] = useState(search);
+  const { data: cartItems } = useCart();
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -126,6 +129,7 @@ function App() {
                         key={product.id}
                         product={product}
                         darkMode={darkMode}
+                        cartItems={cartItems}
                       />
                     ))
                   )}
@@ -143,7 +147,7 @@ function App() {
             </PrivateRoute>
           }
         />
-
+        <Route path="/admin" element={<AdminDashboard />} />
         <Route
           path="/my-products"
           element={

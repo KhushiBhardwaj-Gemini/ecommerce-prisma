@@ -1,7 +1,9 @@
 const prisma = require("../config/prisma");
+const logger = require("../utils/logger");
 
 //add to cart
 const addToCart = async (userId, productId) => {
+  logger.info(`User ${userId} added product ${productId} to cart`);
   return await prisma.$transaction(async (tx) => {
     //if product exists -check
     const product = await prisma.product.findUnique({
@@ -9,6 +11,7 @@ const addToCart = async (userId, productId) => {
     });
 
     if (!product) {
+      logger.warn(`Product not found: ${productId}`);
       throw new Error("Product not found");
     }
 
@@ -45,6 +48,7 @@ const getCart = async (userId) => {
 };
 
 const clearCart = async (userId) => {
+  logger.info(`User ${userId} cleared cart`);
   return await prisma.cart.deleteMany({
     where: {
       userId: userId,
@@ -53,6 +57,7 @@ const clearCart = async (userId) => {
 };
 
 const updateQuantity = async (userId, productId, type) => {
+  logger.info(`User ${userId} updated quantity of ${productId}`);
   return await prisma.$transaction(async (tx) => {
     const existing = await tx.cart.findUnique({
       where: {
@@ -64,6 +69,7 @@ const updateQuantity = async (userId, productId, type) => {
     });
 
     if (!existing) {
+      logger.warn(`Item not in cart: ${productId}`);
       throw new Error("Item not in cart");
     }
     //decrease

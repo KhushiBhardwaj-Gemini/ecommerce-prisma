@@ -1,25 +1,17 @@
 import { useState, useEffect } from "react";
 import API from "../utils/api";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
 import "../styles/product.css";
+import { ROLES } from "../constants/roles";
 import { toast } from "react-toastify";
 
-const ProductCard = ({ product, darkMode, isCart = false }) => {
+const ProductCard = ({ product, darkMode, isCart = false, cartItems = [] }) => {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
 
   //fetch cart from DB
-  const { data: cartData } = useQuery({
-    queryKey: ["cart"],
-    queryFn: async () => {
-      const res = await API.get("/cart");
-      return res.data;
-    },
-  });
-  const cartItems = cartData || [];
-
-  const cartItem = cartItems.find((item) => item.productId === product.id);
+  const cartItem = cartItems?.find((item) => item.productId === product.id);
   const quantity = cartItem?.quantity || 0;
   const isInCart = quantity > 0;
 
@@ -36,6 +28,10 @@ const ProductCard = ({ product, darkMode, isCart = false }) => {
   }, [budget]);
 
   const user = JSON.parse(localStorage.getItem("user"));
+
+  const isOwner = user && product.user_id === user.id;
+  const isAdmin = user?.role === ROLES.ADMIN;
+  const canEdit = isOwner || isAdmin;
 
   const handleDelete = async (id, e) => {
     e.stopPropagation();
@@ -116,7 +112,7 @@ const ProductCard = ({ product, darkMode, isCart = false }) => {
         )}
 
         {/* EDIT + DELETE */}
-        {!isCart && user && product.user_id === user.id && (
+        {!isCart && canEdit && (
           <>
             <button
               className="btn secondary"
