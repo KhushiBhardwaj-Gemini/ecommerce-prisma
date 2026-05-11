@@ -1,9 +1,9 @@
 const prisma = require("../config/prisma");
 const logger = require("../utils/logger");
+const { logAction } = require("./auditService");
 
 //add to cart
 const addToCart = async (userId, productId) => {
-  logger.info(`User ${userId} added product ${productId} to cart`);
   return await prisma.$transaction(async (tx) => {
     //if product exists -check
     const product = await prisma.product.findUnique({
@@ -15,14 +15,14 @@ const addToCart = async (userId, productId) => {
       throw new Error("Product not found");
     }
 
-    return await tx.cart.upsert({
+    const result = await tx.cart.upsert({
       where: {
         userId_productId: {
           userId,
           productId,
         },
       },
-      update : {
+      update: {
         quantity: {
           increment: 1,
         },
@@ -33,6 +33,15 @@ const addToCart = async (userId, productId) => {
         quantity: 1,
       },
     });
+    logger.info(`User ${userId} added product ${productId} to cart`);
+    await logAction({
+      userId,
+      action: "ADD_TO_CART",
+      entity: "CART",
+      entityId: productId,
+    });
+
+    return result;
   });
 };
 
@@ -48,16 +57,21 @@ const getCart = async (userId) => {
 };
 
 const clearCart = async (userId) => {
-  logger.info(`User ${userId} cleared cart`);
-  return await prisma.cart.deleteMany({
+  const res = await prisma.cart.deleteMany({
     where: {
       userId: userId,
     },
   });
+  logger.info(`User ${userId} cleared cart`);
+  await logAction({
+    userId,
+    action: "CLEAR_CART",
+    entity: "CART",
+  });
+  return res;
 };
 
 const updateQuantity = async (userId, productId, type) => {
-  logger.info(`User ${userId} updated quantity of ${productId}`);
   return await prisma.$transaction(async (tx) => {
     const existing = await tx.cart.findUnique({
       where: {
@@ -72,11 +86,13 @@ const updateQuantity = async (userId, productId, type) => {
       logger.warn(`Item not in cart: ${productId}`);
       throw new Error("Item not in cart");
     }
+
+    let result;
     //decrease
     if (type === "decrease") {
       if (existing.quantity === 1) {
         //remove item from cart
-        return await tx.cart.delete({
+        result = await tx.cart.delete({
           where: {
             userId_productId: {
               userId,
@@ -84,9 +100,23 @@ const updateQuantity = async (userId, productId, type) => {
             },
           },
         });
+      } else {
+        result = await tx.cart.update({
+          where: {
+            userId_productId: {
+              userId,
+              productId,
+            },
+          },
+          data: {
+            quantity: existing.quantity - 1,
+          },
+        });
       }
-
-      return await tx.cart.update({
+    }
+    //increase
+    else {
+      result = await tx.cart.update({
         where: {
           userId_productId: {
             userId,
@@ -94,22 +124,18 @@ const updateQuantity = async (userId, productId, type) => {
           },
         },
         data: {
-          quantity: existing.quantity - 1,
+          quantity: existing.quantity + 1,
         },
       });
     }
-    //increase
-    return await tx.cart.update({
-      where: {
-        userId_productId: {
-          userId,
-          productId,
-        },
-      },
-      data: {
-        quantity: existing.quantity + 1,
-      },
+    logger.info(`User ${userId} updated quantity of ${productId}`);
+    await logAction({
+      userId,
+      action: "UPDATE_CART",
+      entity: "CART",
+      entityId: productId,
     });
+    return result;
   });
 };
 

@@ -2,10 +2,10 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const prisma = require("../config/prisma");
 const logger = require("../utils/logger");
+const { logAction } = require("./auditService");
 
 // REGISTER SERVICE
 const registerUser = async ({ name, email, password }) => {
-  logger.info(`User registered: ${email}`);
   const existingUser = await prisma.user.findUnique({
     where: { email },
   });
@@ -25,6 +25,15 @@ const registerUser = async ({ name, email, password }) => {
     },
   });
 
+  logger.info(`User registered: ${email}`);
+
+  await logAction({
+    userId: user.id,
+    action: "REGISTER",
+    entity: "USER",
+    entityId: user.id,
+  });
+
   const token = jwt.sign(
     { id: user.id, role: user.role }, 
     process.env.JWT_SECRET, 
@@ -36,7 +45,6 @@ const registerUser = async ({ name, email, password }) => {
 
 // LOGIN SERVICE
 const loginUser = async ({ email, password }) => {
-  logger.info(`User logged in: ${email}`);
   const user = await prisma.user.findUnique({
     where: { email },
   });
@@ -49,8 +57,22 @@ const loginUser = async ({ email, password }) => {
   const isMatch = await bcrypt.compare(password, user.password);
   if (!isMatch){
     logger.warn(`Login failed: invalid password for email ${email}`);
+    await logAction({
+      userId: user.id,
+      action: "LOGIN_FAILED",
+      entity: "USER",
+      entityId: user.id,
+    });
     throw new Error("Invalid credentials");
   }
+  logger.info(`User logged in: ${email}`);
+  await logAction({
+      userId: user.id,
+      action: "LOGIN_SUCCESS",
+      entity: "USER",
+      entityId: user.id,
+    });
+
   const token = jwt.sign({ id: user.id, role: user.role }, process.env.JWT_SECRET, {
     expiresIn: "1d",
   });

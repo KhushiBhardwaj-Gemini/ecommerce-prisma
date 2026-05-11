@@ -6,6 +6,7 @@ const cartRoutes = require("./routes/cartRoutes");
 const adminRoutes = require("./routes/adminRoutes");
 const logger = require("./utils/logger");
 const requestLogger = require("./middleware/loggerMiddleware");
+const auditRoutes = require("./routes/auditRoutes");
 const app = express();
 
 // middleware
@@ -13,6 +14,7 @@ app.use(requestLogger);
 app.use(express.json());
 app.use(cors());
 app.use("/uploads", express.static("uploads"));
+app.use("/api/admin/audit", auditRoutes);
 
 // routes
 app.use("/api/auth", require("./routes/authRoutes"));
