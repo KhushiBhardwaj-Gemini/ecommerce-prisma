@@ -14,8 +14,13 @@ module.exports = (req, res, next) => {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     req.user = decoded;
 
-    const requestedUserId =
-      req.params?.id || req.body?.userId || req.query?.userId;
+    const requestedUserId = req.body?.userId || req.query?.userId;
+
+    const isUserRoute = req.baseUrl.includes("/users");
+
+    if (!requestedUserId && isUserRoute && req.params?.id) {
+      requestedUserId = req.params.id;
+    }
 
     if (requestedUserId) {
       const reqId = String(requestedUserId).trim();

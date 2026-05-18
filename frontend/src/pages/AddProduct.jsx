@@ -5,6 +5,8 @@ import * as Yup from "yup";
 import API from "../utils/api";
 import "../styles/auth.css";
 import Input from "../components/form/TextInput";
+import SelectInput from "../components/form/SelectInput";
+import FileInput from "../components/form/FileInput";
 import { toast } from "react-toastify";
 
 function AddProduct() {
@@ -77,30 +79,20 @@ function AddProduct() {
         <Input name="description" placeholder="Description" formik={formik} />
 
         {/* category */}
-        <select
+        <SelectInput
           name="category"
-          onChange={formik.handleChange}
-          value={formik.values.category}
-        >
-          <option value="">Select Category</option>
-          <option value="electronics">Electronics</option>
-          <option value="men">Men</option>
-          <option value="women">Women</option>
-          <option value="jwellery">Jwellery</option>
-        </select>
-
-        {formik.touched.category && formik.errors.category && (
-          <p className="error-text">{formik.errors.category}</p>
-        )}
+          placeholder="Select Category"
+          formik={formik}
+          options={[
+            { label: "Electronics", value: "electronics" },
+            { label: "Men", value: "men" },
+            { label: "Women", value: "women" },
+            { label: "Jwellery", value: "jwellery" },
+          ]}
+        />
 
         {/* img */}
-        <input
-          type="file"
-          name="image"
-          onChange={(e) =>
-            formik.setFieldValue("image", e.currentTarget.files[0])
-          }
-        />
+        <FileInput name="image" formik={formik} />
 
         <button type="submit">Add Product</button>
       </form>

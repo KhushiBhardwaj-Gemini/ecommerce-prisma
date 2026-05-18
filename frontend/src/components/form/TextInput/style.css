@@ -56,3 +56,17 @@
 .dark .error-text {
   color: #ff6b6b;
 }
+
+
+select.input {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-color: white;
+  cursor: pointer;
+}
+
+input[type="file"].input {
+  padding: 8px;
+  cursor: pointer;
+}
