@@ -4,7 +4,6 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import API from "../utils/api";
 import Input from "../components/form/TextInput/index.jsx";
-import "../styles/auth.css";
 
 function Login() {
   const navigate = useNavigate();
@@ -47,26 +46,126 @@ function Login() {
   });
 
   return (
-    <div className="auth-container">
-      <h2>Login</h2>
+    <div
+      className="
+      min-h-screen
+      flex
+      items-center
+      justify-center
+      bg-gradient-to-br
+      from-amber-50
+      via-white
+      to-orange-100
+      px-4
+    "
+    >
+      <div
+        className="
+        w-full
+        max-w-md
+        rounded-3xl
+        bg-white
+        p-8
+        shadow-2xl
+        border
+        border-slate-100
+      "
+      >
+        {/* Heading */}
+        <div className="mb-8 text-center">
+          <h2
+            className="
+            text-3xl
+            font-bold
+            text-slate-900
+          "
+          >
+            Welcome Back
+          </h2>
 
-      <form onSubmit={formik.handleSubmit}>
-        {formik.errors.general && (
-          <p className="error-text">{formik.errors.general}</p>
-        )}
+          <p className="mt-2 text-sm text-slate-500">
+            Login to continue shopping
+          </p>
+        </div>
 
-        <Input name="email" placeholder="Email" formik={formik} />
-        <Input
-          name="password"
-          type="password"
-          placeholder="Password"
-          formik={formik}
-        />
+        {/* Form */}
+        <form onSubmit={formik.handleSubmit} className="space-y-5">
+          {/* General Error */}
+          {formik.errors.general && (
+            <p
+              className="
+              rounded-xl
+              bg-red-50
+              px-4
+              py-3
+              text-sm
+              text-red-500
+            "
+            >
+              {formik.errors.general}
+            </p>
+          )}
 
-        <button type="submit" disabled={formik.isSubmitting}>
-          {formik.isSubmitting ? "Logging in..." : "Login"}
-        </button>
-      </form>
+          {/* Email */}
+          <Input name="email" placeholder="Email" formik={formik} />
+
+          {/* Password */}
+          <Input
+            name="password"
+            type="password"
+            placeholder="Password"
+            formik={formik}
+          />
+
+          {/* Button */}
+          <button
+            type="submit"
+            disabled={formik.isSubmitting}
+            className="
+            w-full
+            rounded-2xl
+            bg-amber-500
+            px-4
+            py-3
+            text-sm
+            font-semibold
+            text-white
+            shadow-lg
+            transition-all
+            duration-200
+            hover:bg-amber-600
+            hover:shadow-xl
+            disabled:cursor-not-allowed
+            disabled:opacity-70
+          "
+          >
+            {formik.isSubmitting ? "Logging in..." : "Login"}
+          </button>
+        </form>
+
+        {/* Bottom Text */}
+        <p
+          className="
+          mt-6
+          text-center
+          text-sm
+          text-slate-500
+        "
+        >
+          Dont have an account?{" "}
+          <span
+            onClick={() => navigate("/register")}
+            className="
+            cursor-pointer
+            font-semibold
+            text-amber-500
+            hover:text-amber-600
+          "
+          >
+            Register
+          </span>
+        </p>
+      </div>
     </div>
   );
 }
