@@ -64,47 +64,100 @@ function AddProduct() {
   });
 
   return (
-    <div className="auth-container">
+    <div
+      className="
+      min-h-screen
+      bg-gradient-to-br
+      from-orange-50
+      via-white
+      to-amber-100
+      px-4
+      py-10
+    "
+    >
       <div
         className="
-          mt-4
-          mb-4
-          text-xl
-          font-bold
-          text-slate-900
-        "  
+        mx-auto
+        max-w-2xl
+        rounded-3xl
+        border
+        border-orange-100
+        bg-white/90
+        p-8
+        shadow-2xl
+        backdrop-blur
+      "
       >
-        Add Product
+        {/* Heading */}
+        <div className="mb-8 text-center">
+          <h1 className="text-2xl font-extrabold text-slate-900">
+            Add Product
+          </h1>
+
+          <p className="mt-2 text-slate-500">Add a new item to your store</p>
+        </div>
+
+        <form onSubmit={formik.handleSubmit} className="space-y-5">
+          {/* Product Title */}
+          <Input name="title" placeholder="Product Name" formik={formik} />
+
+          {/* Price */}
+          <Input name="price" placeholder="Price" formik={formik} />
+
+          {/* Description */}
+          <Input name="description" placeholder="Description" formik={formik} />
+
+          {/* Category */}
+          <SelectInput
+            name="category"
+            placeholder="Select Category"
+            formik={formik}
+            options={[
+              { label: "Electronics", value: "electronics" },
+              { label: "Men", value: "men" },
+              { label: "Women", value: "women" },
+              { label: "Jewellery", value: "jewellery" },
+            ]}
+          />
+
+          {/* Image Upload */}
+          <div
+            className="
+            rounded-2xl
+            border-2
+            border-dashed
+            border-orange-200
+            bg-orange-50/40
+            p-4
+          "
+          >
+            <FileInput name="image" formik={formik} />
+          </div>
+
+          {/* Submit Button */}
+          <button
+            type="submit"
+            className="
+            w-full
+            rounded-2xl
+            bg-amber-500
+            px-6
+            py-3
+            text-lg
+            font-semibold
+            text-white
+            shadow-lg
+            transition-all
+            duration-300
+            hover:-translate-y-1
+            hover:shadow-xl
+            active:scale-95
+          "
+          >
+            Add Product
+          </button>
+        </form>
       </div>
-
-      <form onSubmit={formik.handleSubmit}>
-        {/*product title*/}
-        <Input name="title" placeholder="Product Name" formik={formik} />
-
-        {/*price*/}
-        <Input name="price" placeholder="Price" formik={formik} />
-
-        {/*desc*/}
-        <Input name="description" placeholder="Description" formik={formik} />
-
-        {/* category */}
-        <SelectInput
-          name="category"
-          placeholder="Select Category"
-          formik={formik}
-          options={[
-            { label: "Electronics", value: "electronics" },
-            { label: "Men", value: "men" },
-            { label: "Women", value: "women" },
-            { label: "Jwellery", value: "jwellery" },
-          ]}
-        />
-
-        {/* img */}
-        <FileInput name="image" formik={formik} />
-
-        <button type="submit">Add Product</button>
-      </form>
     </div>
   );
 }
