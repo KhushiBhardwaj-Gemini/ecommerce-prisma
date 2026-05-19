@@ -3,9 +3,11 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useFormik } from "formik";
 import { useState } from "react";
 import Input from "../components/form/TextInput";
+import SelectInput from "../components/form/SelectInput";
+import FileInput from "../components/form/FileInput";
 import { toast } from "react-toastify";
 import API from "../utils/api";
-import "../styles/auth.css";
+
 
 function EditProduct() {
   const { id } = useParams();
@@ -57,7 +59,7 @@ function EditProduct() {
         queryClient.invalidateQueries(["products"]);
         toast.success("Product updated successfully");
 
-        navigate("/");
+        navigate("/products");
       } catch (err) {
         setError(err.response?.data?.msg || "Update failed");
         toast.error(err.response?.data?.msg || "Update failed");
@@ -73,7 +75,17 @@ function EditProduct() {
 
   return (
     <div className="auth-container">
-      <h2>Edit Product</h2>
+      <div
+        className="
+          mt-4
+          mb-4
+          text-xl
+          font-bold
+          text-slate-900
+        "  
+      >
+        Edit Product
+      </div>
 
       {/* error message */}
       {error && <p style={{ color: "red" }}>{error}</p>}
@@ -89,26 +101,19 @@ function EditProduct() {
         <Input name="description" placeholder="Description" formik={formik} />
 
         {/* category */}
-        <select
+        <SelectInput
           name="category"
-          onChange={formik.handleChange}
-          value={formik.values.category}
-        >
-          <option value="">Select Category</option>
-          <option value="electronics">Electronics</option>
-          <option value="men">Men</option>
-          <option value="women">Women</option>
-          <option value="jwellery">Jwellery</option>
-        </select>
-
-        {/* img */}
-        <input
-          type="file"
-          name="image"
-          onChange={(e) =>
-            formik.setFieldValue("image", e.currentTarget.files[0])
-          }
+          placeholder="Select Category"
+          formik={formik}
+          options={[
+            { label: "Electronics", value: "electronics" },
+            { label: "Men", value: "men" },
+            { label: "Women", value: "women" },
+            { label: "Jwellery", value: "jwellery" },
+          ]}
         />
+        {/* img */}
+        <FileInput name="image" formik={formik} />
 
         <button type="submit">Update Product</button>
       </form>

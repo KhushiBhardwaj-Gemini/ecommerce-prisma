@@ -1,12 +1,6 @@
 import PropTypes from "prop-types";
-import "../TextInput/style.css";
 
-const SelectInput = ({
-  name,
-  formik,
-  options,
-  placeholder,
-}) => {
+const SelectInput = ({ name, formik, options, placeholder }) => {
   const error = formik.touched[name] && formik.errors[name];
 
   return (
@@ -16,23 +10,35 @@ const SelectInput = ({
         value={formik.values[name]}
         onChange={formik.handleChange}
         onBlur={formik.handleBlur}
-        className={error ? "input error" : "input"}
+        className={`
+            w-full
+            rounded-2xl
+            border
+            border-slate-200
+            bg-slate-50
+            px-5
+            py-4
+            text-slate-800
+            outline-none
+            transition-all
+            duration-300
+            focus:border-orange-400
+            focus:bg-white
+            focus:ring-4
+            focus:ring-orange-100
+            ${error ? "border-red-400" : ""}
+        `}          
       >
         <option value="">{placeholder}</option>
 
         {options.map((option) => (
-          <option
-            key={option.value}
-            value={option.value}
-          >
+          <option key={option.value} value={option.value}>
             {option.label}
           </option>
         ))}
       </select>
 
-      <p className="error-text">
-        {error ? formik.errors[name] : ""}
-      </p>
+      <p className="mt-2 text-sm text-red-500">{error ? formik.errors[name] : ""}</p>
     </div>
   );
 };

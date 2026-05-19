@@ -19,7 +19,10 @@ import EditProduct from "./pages/EditProduct";
 import ProductDetails from "./pages/ProductDetails";
 import AdminDashboard from "./pages/AdminDashboard";
 import useCart from "./hooks/useCart";
-import "./styles/app.css";
+import HeroSection from "./components/HeroSection";
+import Home from "./pages/Home";
+import Products from "./pages/Products";
+
 
 import API from "./utils/api";
 
@@ -61,7 +64,7 @@ function App() {
   });
 
   return (
-    <div className={`app-container ${darkMode ? "dark" : ""}`}>
+    <div className="min-h-screen bg-[#f8f8f8] pt-24">
       <Navbar />
 
       <Routes>
@@ -76,65 +79,16 @@ function App() {
           path="/"
           element={
             <PrivateRoute>
-              <>
-                <div className="controls">
-                  <div className="left-controls">
-                    <input
-                      placeholder="Search..."
-                      value={search}
-                      onChange={(e) => setSearch(e.target.value)}
-                      className="input"
-                    />
+              <Home />
+            </PrivateRoute>
+          }
+        />
 
-                    <Select
-                      value={category}
-                      onChange={(e) => setCategory(e.target.value)}
-                      darkMode={darkMode}
-                    >
-                      <option value="">All</option>
-                      <option value="electronics">Electronics</option>
-                      <option value="men">Men</option>
-                      <option value="women">Women</option>
-                      <option value="jwellery">Jwellery</option>
-                    </Select>
-
-                    <Select
-                      value={sort}
-                      onChange={(e) => setSort(e.target.value)}
-                      darkMode={darkMode}
-                    >
-                      <option value="">Sort</option>
-                      <option value="low">Low → High</option>
-                      <option value="high">High → Low</option>
-                    </Select>
-                  </div>
-                  <div className="right-controls">
-                    <button
-                      className="theme-btn"
-                      onClick={() => setDarkMode((prev) => !prev)}
-                    >
-                      {darkMode ? <Sun size={18} /> : <Moon size={18} />}
-                    </button>
-                  </div>
-                </div>
-
-                <div className="grid">
-                  {isLoading ? (
-                    <div>Loading...</div>
-                  ) : isError ? (
-                    <div>Error loading data</div>
-                  ) : (
-                    data?.products?.map((product) => (
-                      <ProductCard
-                        key={product.id}
-                        product={product}
-                        darkMode={darkMode}
-                        cartItems={cartItems}
-                      />
-                    ))
-                  )}
-                </div>
-              </>
+        <Route
+          path="/products"
+          element={
+            <PrivateRoute>
+              <Products />
             </PrivateRoute>
           }
         />

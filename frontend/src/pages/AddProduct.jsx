@@ -3,7 +3,6 @@ import { useFormik } from "formik";
 import { useQueryClient } from "@tanstack/react-query";
 import * as Yup from "yup";
 import API from "../utils/api";
-import "../styles/auth.css";
 import Input from "../components/form/TextInput";
 import SelectInput from "../components/form/SelectInput";
 import FileInput from "../components/form/FileInput";
@@ -66,7 +65,17 @@ function AddProduct() {
 
   return (
     <div className="auth-container">
-      <h2>Add Product</h2>
+      <div
+        className="
+          mt-4
+          mb-4
+          text-xl
+          font-bold
+          text-slate-900
+        "  
+      >
+        Add Product
+      </div>
 
       <form onSubmit={formik.handleSubmit}>
         {/*product title*/}

@@ -2,7 +2,6 @@ import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 import API from "../utils/api";
 import { DataGrid } from "@mui/x-data-grid";
-import "../styles/admin.css";
 
 const AdminDashboard = () => {
   const [selectedProduct, setSelectedProduct] = useState(null);
@@ -103,46 +102,269 @@ const AdminDashboard = () => {
   };
 
   return (
-    <div className="dashboard-container">
-      <h2 className="dashboard-title">Admin Dashboard</h2>
-      <button onClick={handleDownloadAudit}>Download Audit Logs</button>
-      <div className="table-wrapper">
-        <DataGrid
-          rows={data || []}
-          columns={columns}
-          getRowId={(row) => row.id}
-          pageSize={5}
-          rowsPerPageOptions={[5, 10]}
-          onRowClick={(params) => handleRowClick(params.row.id)}
-          sx={{
-            "& .MuiDataGrid-row": {
-              cursor: "pointer",
-            },
-          }}
-        />
-      </div>
+    <div
+      className="
+      min-h-screen
+      bg-slate-100
+      px-4
+      py-10
+      lg:px-10
+    "
+    >
+      <div className="mx-auto max-w-7xl">
+        {/* HEADER */}
+        <div
+          className="
+          mb-10
+          flex
+          flex-col
+          gap-6
+          rounded-[32px]
+          border
+          border-slate-200
+          bg-white
+          p-8
+          shadow-sm
+          lg:flex-row
+          lg:items-center
+          lg:justify-between
+        "
+        >
+          <div>
+            <span
+              className="
+              rounded-full
+              bg-orange-100
+              px-4
+              py-2
+              text-sm
+              font-semibold
+              text-orange-600
+            "
+            >
+              Admin Control Center
+            </span>
 
-      {selectedProduct && (
-        <div className="users-section">
-          <h3>
-            Users who added: <span className="userH">{selected?.title}</span>
-          </h3>
-          {loadingUsers ? (
-            <p>Loading users...</p>
-          ) : users.length === 0 ? (
-            <p>No users have added this product</p>
-          ) : (
-            <div style={{ height: 400 }}>
-              <DataGrid
-                rows={userRows}
-                columns={userColumns}
-                pageSize={5}
-                rowsPerPageOptions={[5, 10, 20]}
-              />
-            </div>
-          )}
+            <h1
+              className="
+              mt-5
+              text-4xl
+              font-bold
+              tracking-tight
+              text-slate-900
+            "
+            >
+              Admin Dashboard
+            </h1>
+
+            <p
+              className="
+              mt-2
+              text-lg
+              text-slate-500
+            "
+            >
+              Manage products, users, and audit records.
+            </p>
+          </div>
+
+          <button
+            onClick={handleDownloadAudit}
+            className="
+            rounded-2xl
+            bg-slate-900
+            px-6
+            py-4
+            text-sm
+            font-semibold
+            text-white
+            transition-all
+            duration-300
+            hover:scale-105
+            hover:bg-slate-800
+          "
+          >
+            Download Audit Logs
+          </button>
         </div>
-      )}
+
+        {/* PRODUCTS TABLE */}
+        <div
+          className="
+          overflow-hidden
+          rounded-[32px]
+          border
+          border-slate-200
+          bg-white
+          p-5
+          shadow-sm
+        "
+        >
+          <div
+            className="
+            mb-5
+            flex
+            items-center
+            justify-between
+          "
+          >
+            <div>
+              <h2
+                className="
+                text-2xl
+                font-bold
+                text-slate-900
+              "
+              >
+                Product Inventory
+              </h2>
+
+              <p
+                className="
+                mt-1
+                text-slate-500
+              "
+              >
+                Click a product to view interested users.
+              </p>
+            </div>
+
+            <div
+              className="
+              rounded-2xl
+              bg-slate-100
+              px-5
+              py-3
+            "
+            >
+              <span className="text-sm text-slate-500">Total Products</span>
+
+              <div
+                className="
+                text-2xl
+                font-bold
+                text-slate-900
+              "
+              >
+                {data?.length || 0}
+              </div>
+            </div>
+          </div>
+
+          <div style={{ height: 500 }}>
+            <DataGrid
+              rows={data || []}
+              columns={columns}
+              getRowId={(row) => row.id}
+              pageSize={5}
+              rowsPerPageOptions={[5, 10]}
+              onRowClick={(params) => handleRowClick(params.row.id)}
+              sx={{
+                border: "none",
+                fontSize: "15px",
+
+                "& .MuiDataGrid-columnHeaders": {
+                  backgroundColor: "#f8fafc",
+                  borderBottom: "1px solid #e2e8f0",
+                  fontWeight: 700,
+                },
+
+                "& .MuiDataGrid-row": {
+                  cursor: "pointer",
+                  transition: "all 0.2s ease",
+                },
+
+                "& .MuiDataGrid-row:hover": {
+                  backgroundColor: "#f8fafc",
+                },
+
+                "& .MuiDataGrid-cell": {
+                  borderBottom: "1px solid #f1f5f9",
+                },
+              }}
+            />
+          </div>
+        </div>
+
+        {/* USERS TABLE */}
+        {selectedProduct && (
+          <div
+            className="
+            mt-10
+            overflow-hidden
+            rounded-[32px]
+            border
+            border-slate-200
+            bg-white
+            p-5
+            shadow-sm
+          "
+          >
+            <div className="mb-5">
+              <span
+                className="
+                rounded-full
+                bg-emerald-100
+                px-4
+                py-2
+                text-sm
+                font-semibold
+                text-emerald-700
+              "
+              >
+                Interested Customers
+              </span>
+
+              <h2
+                className="
+                mt-4
+                text-2xl
+                font-bold
+                text-slate-900
+              "
+              >
+                Users who added{" "}
+                <span className="text-orange-500">{selected?.title}</span>
+              </h2>
+            </div>
+
+            {loadingUsers ? (
+              <p className="text-slate-500">Loading users...</p>
+            ) : users.length === 0 ? (
+              <p className="text-slate-500">
+                No users have added this product.
+              </p>
+            ) : (
+              <div style={{ height: 400 }}>
+                <DataGrid
+                  rows={userRows}
+                  columns={userColumns}
+                  pageSize={5}
+                  rowsPerPageOptions={[5, 10, 20]}
+                  sx={{
+                    border: "none",
+                    fontSize: "15px",
+
+                    "& .MuiDataGrid-columnHeaders": {
+                      backgroundColor: "#f8fafc",
+                      borderBottom: "1px solid #e2e8f0",
+                      fontWeight: 700,
+                    },
+
+                    "& .MuiDataGrid-row:hover": {
+                      backgroundColor: "#f8fafc",
+                    },
+
+                    "& .MuiDataGrid-cell": {
+                      borderBottom: "1px solid #f1f5f9",
+                    },
+                  }}
+                />
+              </div>
+            )}
+          </div>
+        )}
+      </div>
     </div>
   );
 };
